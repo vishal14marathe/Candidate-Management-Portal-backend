@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -31,9 +30,13 @@ public class User {
     @Column(nullable = false)
     private Role role;
     
-    @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
     
     public enum Role {
         ROLE_ADMIN,
