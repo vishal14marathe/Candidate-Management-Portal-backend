@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -26,7 +28,7 @@ public class Candidate {
     @Column(nullable = false)
     private String qualification;
     
-    @Column(nullable = false, unique = true)
+    @Column(name = "identity_proof_number")
     private String identityProofNumber;
     
     @Column(nullable = false)
@@ -42,6 +44,28 @@ public class Candidate {
     private String occupationStatus;
     
     private String resumePath;
+    
+    @Lob
+    @JdbcTypeCode(SqlTypes.BINARY)
+    @Column(name = "resume_data", columnDefinition = "BYTEA")
+    private byte[] resumeData;
+    
+    @Column(name = "resume_filename")
+    private String resumeFilename;
+    
+    @Column(name = "resume_content_type")
+    private String resumeContentType;
+    
+    @Lob
+    @JdbcTypeCode(SqlTypes.BINARY)
+    @Column(name = "id_proof_data", columnDefinition = "BYTEA")
+    private byte[] idProofData;
+    
+    @Column(name = "id_proof_filename")
+    private String idProofFilename;
+    
+    @Column(name = "id_proof_content_type")
+    private String idProofContentType;
     
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -36,6 +36,25 @@ public class FileStorageService {
         }
     }
     
+    // Store file temporarily during registration (before candidate is created)
+    public String storeTempFile(MultipartFile file) {
+        String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
+        
+        try {
+            if (fileName.contains("..")) {
+                throw new RuntimeException("Invalid file path: " + fileName);
+            }
+            
+            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            
+            return fileName;
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not store file " + fileName, ex);
+        }
+    }
+    
     public String storeFile(MultipartFile file, Long candidateId) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new RuntimeException("Candidate not found with id: " + candidateId));
